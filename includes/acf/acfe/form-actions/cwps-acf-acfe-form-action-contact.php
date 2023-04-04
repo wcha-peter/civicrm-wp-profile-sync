@@ -2578,6 +2578,9 @@ class CiviCRM_Profile_Sync_ACF_ACFE_Form_Action_Contact extends CiviCRM_Profile_
 			$choices[ $group['id'] ] = $group['title'];
 		}
 
+		// Add choice to represent using a custom hook for the group id.
+		$choices[0] = 'civicrm_profile_sync_acfe_dynamic_group hook';
+
 		// Add Group choices and modify Field.
 		$group_field['choices'] = $choices;
 		$group_field['search_placeholder'] = '';
@@ -6053,6 +6056,11 @@ class CiviCRM_Profile_Sync_ACF_ACFE_Form_Action_Contact extends CiviCRM_Profile_
 				if ( empty( $group['group_conditional'] ) ) {
 					continue;
 				}
+			}
+
+			// If group_id is zero, attempt to set it the result of a filter.
+			if ( $group['group_id'] == 0 ) {
+				$group['group_id'] = apply_filters( 'civicrm_profile_sync_acfe_dynamic_group', $group );
 			}
 
 			// Skip if there's no Group ID.
